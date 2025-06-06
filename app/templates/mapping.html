@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <title>Конструктор маппинга</title>
+
+  <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+  <script src="https://unpkg.com/htmx.org@1.9.10/dist/ext/json-enc.js"></script>
+
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@picocss/pico@2.0.6/css/pico.min.css" />
+</head>
+<body class="container">
+
+  <h1>Маппинг проекта {{ project_id }}</h1>
+
+  <form hx-post="/mapping"
+        hx-ext="json-enc"
+        hx-headers='{
+          "X-PROJECT-ID": "{{ project_id }}",
+          "X-API-KEY":    "{{ api_key }}"
+        }'
+        hx-target="#status"
+        hx-swap="innerHTML">
+
+    <input type="hidden" name="project_id" value="{{ project_id }}" />
+
+    <table>
+      <thead>
+        <tr><th>Source</th><th>Target</th><th>Transform</th></tr>
+      </thead>
+      <tbody>
+        {% for col in sample_columns %}
+        <tr>
+          <td><code>{{ col }}</code></td>
+          <td>
+            <input type="text" name="rules[{{ loop.index0 }}][target]" value="{{ col }}">
+            <input type="hidden" name="rules[{{ loop.index0 }}][source]" value="{{ col }}">
+            <input type="hidden" name="rules[{{ loop.index0 }}][type]"   value="string">
+          </td>
+          <td>
+            <select name="rules[{{ loop.index0 }}][transform]">
+              <option value="">—</option>
+              <option value="trim">trim</option>
+              <option value="title">title</option>
+              <option value="lower">lower</option>
+              <option value="upper">upper</option>
+            </select>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <button class="contrast">Сохранить&nbsp;маппинг</button>
+
+    <button style="margin-left:1rem"
+            hx-post="/send/manual"
+            hx-target="#status"
+            hx-swap="innerHTML">
+      Отправить&nbsp;во&nbsp;внешний&nbsp;сервис
+    </button>
+  </form>
+
+  <div id="status" style="margin-top:1rem;"></div>
+
+</body>
+</html>

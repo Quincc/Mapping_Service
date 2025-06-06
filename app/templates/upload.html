@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <title>Загрузка файла</title>
+  <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@picocss/pico@2.0.6/css/pico.min.css" />
+</head>
+<body class="container">
+
+  <h1>Загрузка файла в проект {{ project_id }}</h1>
+
+  <form hx-post="/upload/local"
+        hx-encoding="multipart/form-data"
+        hx-headers='{
+          "X-PROJECT-ID": "{{ project_id }}",
+          "X-API-KEY":    "{{ api_key }}"
+        }'
+        hx-target="#status"
+        hx-swap="innerHTML">
+    <input type="file" name="file" accept=".csv,.xlsx,.json" required />
+    <button type="submit">Загрузить</button>
+  </form>
+
+  <div id="status" style="margin-top:1rem;"></div>
+
+</body>
+</html>
