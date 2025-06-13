@@ -31,3 +31,6 @@ async def send_dataframe(df: pd.DataFrame, project_id: str, api_key: str,
         return SendResult(status_code=getattr(exc, "status_code", 0),
                           ok=False, attempts=attempts or 3,
                           response=str(exc)[:200])
+
+async def send_dataframe_local(df: pd.DataFrame):
+     df.to_json("saves/save1.json", index=False)

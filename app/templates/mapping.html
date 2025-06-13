@@ -14,7 +14,7 @@
 
   <h1>Маппинг проекта {{ project_id }}</h1>
 
-  <form hx-post="/mapping"
+  <form hx-put="/mapping/"
         hx-ext="json-enc"
         hx-headers='{
           "X-PROJECT-ID": "{{ project_id }}",
@@ -55,7 +55,7 @@
     <button class="contrast">Сохранить&nbsp;маппинг</button>
 
     <button style="margin-left:1rem"
-            hx-post="/send/manual"
+            hx-put="/send/manual/"
             hx-target="#status"
             hx-swap="innerHTML">
       Отправить&nbsp;во&nbsp;внешний&nbsp;сервис

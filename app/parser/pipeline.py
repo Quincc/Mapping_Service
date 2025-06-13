@@ -19,7 +19,7 @@ from app.mapping.storage import load_config
 from app.mapping.engine  import apply_mapping
 from app.quality.checker import check_dataframe
 from app.quality.storage import save_report
-from app.sender.service  import send_dataframe
+from app.sender.service  import send_dataframe, send_dataframe_local
 from app.auth.project    import get_project_api_key
 
 log = structlog.get_logger()
@@ -56,6 +56,7 @@ async def run_full_pipeline(project_id: str, file_path: str):
     # 4) Отправка наружу
     api_key = await get_project_api_key(project_id)          # достаём ваш ключ проекта
     send_res = await send_dataframe(df, project_id, api_key)
+    res = await send_dataframe_local(df)
     if send_res.ok:
         log.info("pipeline.sent", status=send_res.status_code, attempts=send_res.attempts)
     else:

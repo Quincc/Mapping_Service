@@ -14,7 +14,7 @@ class MappingRule(BaseModel):
     target: str = Field(..., examples=["name"])
     type:   Literal["string", "int", "float", "date"] = "string"
     transform: TransformName | None = None
-    date_format: str | None = None   # для datefmt
+    date_format: str | None = None
 
 class MappingConfig(BaseModel):
     project_id: str

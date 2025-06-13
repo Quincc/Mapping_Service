@@ -68,22 +68,28 @@ def create_app() -> FastAPI:
     @app.get("/ui/mapping", response_class=HTMLResponse, tags=["ui"])
     async def mapping_page(
         request: Request,
-        project = Depends(get_current_project),
+        project_id: str = Query(..., description="UUID проекта"),
+        api_key: str   = Query(..., description="API-ключ проекта"),
     ):
-        """
-        UI для маппинга. Зависимость get_current_project автоматически
-        проверяет заголовки X-PROJECT-ID + X-API-KEY.
-        """
-        cols = get_sample_columns(project.id)
+        # 1) валидация credentials вручную, как в upload_page
+        async with AsyncSessionLocal() as db:
+            proj = await get_project(db, project_id)
+        if proj is None or proj.api_key != api_key:
+            raise HTTPException(403, "invalid credentials")
+
+        # 2) получаем колонки для первоначального рендера
+        cols = get_sample_columns(project_id)
+
         return templates.TemplateResponse(
             "mapping.html",
             {
                 "request": request,
-                "project_id": project.id,
-                "api_key": project.api_key,
+                "project_id": project_id,
+                "api_key": api_key,
                 "sample_columns": cols,
             },
         )
+
 
     @app.get("/ui/quality", response_class=HTMLResponse, tags=["ui"])
     async def quality_page(
