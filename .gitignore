@@ -4,3 +4,6 @@ saves/
 config/
 test.txt
 mapping.db
+.idea/
+*.iml
+*.env
